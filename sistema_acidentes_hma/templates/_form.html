@@ -1,0 +1,79 @@
+<div class="form-grid">
+    <label>Classificação da ocorrência *
+        <select name="classificacao" required>
+            <option value="Acidente" {{ 'selected' if (not acidente) or (acidente and acidente.classificacao == 'Acidente') else '' }}>⚠️ Acidente</option>
+            <option value="Incidente" {{ 'selected' if acidente and acidente.classificacao == 'Incidente' else '' }}>ℹ️ Incidente (Quase-acidente)</option>
+        </select>
+    </label>
+    <label>Investigador responsável
+        <input type="text" name="investigador" placeholder="Ex.: Técnico de Segurança / Enfermeiro"
+            value="{{ acidente.investigador if acidente and acidente.investigador else '' }}">
+    </label>
+    <label>Data da ocorrência *<input type="date" name="data_ocorrencia" required
+            value="{{ acidente.data_ocorrencia if acidente else '' }}"></label>
+    <label>Colaborador *<input type="text" name="colaborador" required
+            value="{{ acidente.colaborador if acidente else '' }}"></label>
+    <label>Contato<input type="number" name="contato" value="{{ acidente.contato if acidente else '' }}"></label>
+    <label>Setor *<input type="text" name="setor" required placeholder="Ex.: UTI NEO"
+            value="{{ acidente.setor if acidente else '' }}"></label>
+    <label>Função<input type="text" name="funcao" placeholder="Ex.: Técnico de Enfermagem"
+            value="{{ acidente.funcao if acidente else '' }}"></label>
+    <label>Tipo de ocorrência<input type="text" name="tipo_ocorrencia" placeholder="Ex.: SAF ou CAF"
+            value="{{ acidente.tipo_ocorrencia if acidente else '' }}"></label>
+    <label>Tipo de acidente / incidente *<input type="text" name="tipo_acidente" placeholder="Ex.: Trajeto..."
+            value="{{ acidente.tipo_acidente if acidente else '' }}"></label>
+    <label>Fonte geradora<input type="text" name="fonte_geradora" placeholder="Ex.: Agulha, Piso molhado..."
+            value="{{ acidente.fonte_geradora if acidente else '' }}"></label>
+    <label>Turno<select name="turno">
+            <option value="">Selecione</option>{% for op in ['Manhã','Tarde','Noite','Madrugada'] %}<option
+                {{ 'selected' if acidente and acidente.turno==op else '' }}>{{ op }}</option>{% endfor %}
+        </select></label>
+    <label>Sexo<select name="sexo">
+            <option value="">Selecione</option>{% for op in ['Feminino','Masculino','Outro/Não informado'] %}<option
+                {{ 'selected' if acidente and acidente.sexo==op else '' }}>{{ op }}</option>{% endfor %}
+        </select></label>
+    <label>Tipo de contrato<select name="tipo_contrato">
+            <option value="">Selecione</option>{% for op in ['CLT','PJ','RPA'] %}<option {{ 'selected' if acidente and
+                acidente.tipo_contrato==op else '' }}>{{ op }}</option>{% endfor %}
+        </select></label>
+</div>
+
+<!-- Mapa Anatômico Interativo do Corpo Humano -->
+<div class="card body-map-card" style="margin: 20px 0;">
+    <div class="body-map-card-header">
+        <div>
+            <h3>🫀 Seleção de Partes do Corpo Atingidas</h3>
+            <p>Clique diretamente nas regiões do corpo humano (Frente e Costas) ou nos botões rápidos para marcar as lesões:</p>
+        </div>
+        <div class="body-map-legend">
+            <span class="legend-item"><span class="legend-color injured"></span> Selecionada</span>
+            <span class="legend-item"><span class="legend-color normal"></span> Não selecionada</span>
+        </div>
+    </div>
+    <div id="bodyMapForm" data-body-map="interactive" data-selected="{{ acidente.parte_corpo if acidente else '' }}" data-input-target="#parte_corpo_input"></div>
+    <div style="margin-top: 16px;">
+        <label style="display:grid;gap:6px;font-size:12px;color:#475569;font-weight:700;">
+            Partes do corpo atingidas (sincronizado automaticamente com os cliques):
+            <input type="text" id="parte_corpo_input" name="parte_corpo" placeholder="Ex.: Mão Direita, Dedos..." value="{{ acidente.parte_corpo if acidente else '' }}">
+        </label>
+        <small style="display:block;color:#64748b;margin-top:4px;font-size:11px;">Dica: Você pode clicar no corpo humano acima para marcar as regiões e também complementar com texto livre.</small>
+    </div>
+</div>
+<div class="checks">
+    {% for field, label in [
+    ('exposicao_biologica','Exposição biológica'),('perfurocortante','Material perfurocortante'),
+    ('fluxograma_seguido','Fluxograma seguido'),('quimioprofilaxia','Quimioprofilaxia'),
+    ('cat_emitida','CAT emitida'),('houve_afastamento','Houve afastamento')
+    ] %}
+    <label class="check"><input type="checkbox" name="{{ field }}" {% if acidente and acidente[field] %}checked{% endif
+            %}><span>{{ label }}</span></label>
+    {% endfor %}
+</div>
+<div class="form-grid compact">
+    <label>Data da CAT<input type="date" name="data_cat"
+            value="{{ acidente.data_cat if acidente and acidente.data_cat else '' }}"></label>
+    <label>Dias de afastamento<input type="number" name="dias_afastamento" min="0"
+            value="{{ acidente.dias_afastamento if acidente else 0 }}"></label>
+</div>
+<label>Observações<textarea name="observacoes"
+        rows="4">{{ acidente.observacoes if acidente else '' }}</textarea></label>

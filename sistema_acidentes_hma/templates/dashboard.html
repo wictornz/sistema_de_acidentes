@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard de Acidentes | HMA{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Dashboard de Acidentes</h1>
+        <p>Indicadores de segurança do trabalho e monitoramento de acidentes hospitalares.</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('registrar') }}">+ Registrar acidente</a>
+</div>
+
+<div class="filter-card">
+    <label>Ano
+        <select id="filtroAno">
+            <option value="">Todos os anos</option>
+        </select>
+    </label>
+    <label>Setor
+        <select id="filtroSetor">
+            <option value="">Todos os setores</option>
+        </select>
+    </label>
+    <button class="btn secondary" id="limparFiltros">Limpar filtros</button>
+</div>
+
+<div class="kpis">
+    <div class="kpi kpi--blue">
+        <div class="kpi-icon">📊</div>
+        <div>
+            <span>Total de acidentes</span>
+            <strong id="kpiTotal">0</strong>
+        </div>
+    </div>
+    <div class="kpi kpi--amber">
+        <div class="kpi-icon">⏱️</div>
+        <div>
+            <span>Dias de afastamento</span>
+            <strong id="kpiDias">0</strong>
+        </div>
+    </div>
+    <div class="kpi kpi--purple">
+        <div class="kpi-icon">📋</div>
+        <div>
+            <span>CATs emitidas</span>
+            <strong id="kpiCat">0</strong>
+        </div>
+    </div>
+    <div class="kpi kpi--rose">
+        <div class="kpi-icon">🏥</div>
+        <div>
+            <span>Com afastamento</span>
+            <strong id="kpiAfast">0</strong>
+        </div>
+    </div>
+</div>
+
+<div class="charts-grid">
+    <!-- Card Destaque: Partes do Corpo Atingidas -->
+    <section class="card chart-card chart-card--featured">
+        <div class="chart-header">
+            <div>
+                <h2>🫀 Partes do corpo mais atingidas</h2>
+                <p>Distribuição anatômica das lesões registradas</p>
+            </div>
+            <span class="chart-tag chart-tag--danger">Anatomia</span>
+        </div>
+        <div class="chart-body">
+            <canvas id="chartPartes"></canvas>
+            <div class="empty" id="emptyPartes">
+                <span class="empty-icon">🫀</span>
+                <p>Nenhuma parte anatômica registrada para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Card: Tipos de Acidente -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>⚠️ Tipos de acidente</h2>
+                <p>Distribuição por natureza da ocorrência</p>
+            </div>
+            <span class="chart-tag chart-tag--primary">Classificação</span>
+        </div>
+        <div class="chart-body">
+            <canvas id="chartTipo"></canvas>
+            <div class="empty" id="emptyTipo">
+                <span class="empty-icon">📊</span>
+                <p>Nenhum dado registrado para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Card: Evolução Mensal -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>📈 Evolução mensal dos acidentes</h2>
+                <p>Histórico de ocorrências mês a mês</p>
+            </div>
+            <span class="chart-tag chart-tag--info">Temporal</span>
+        </div>
+        <div class="chart-body">
+            <canvas id="chartMes"></canvas>
+            <div class="empty" id="emptyMes">
+                <span class="empty-icon">📅</span>
+                <p>Nenhum dado registrado para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Card: Acidentes por Setor -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>🏢 Acidentes por setor</h2>
+                <p>Locais de trabalho com mais ocorrências</p>
+            </div>
+            <span class="chart-tag chart-tag--neutral">Setores</span>
+        </div>
+        <div class="chart-body">
+            <canvas id="chartSetor"></canvas>
+            <div class="empty" id="emptySetor">
+                <span class="empty-icon">🏢</span>
+                <p>Nenhum dado registrado para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Card: Acidentes por Função -->
+    <section class="card chart-card span-2">
+        <div class="chart-header">
+            <div>
+                <h2>🩺 Acidentes por função / cargo</h2>
+                <p>Cargos hospitalares com maior frequência de sinistros</p>
+            </div>
+            <span class="chart-tag chart-tag--success">Cargos</span>
+        </div>
+        <div class="chart-body">
+            <canvas id="chartFuncao"></canvas>
+            <div class="empty" id="emptyFuncao">
+                <span class="empty-icon">🩺</span>
+                <p>Nenhum dado registrado para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

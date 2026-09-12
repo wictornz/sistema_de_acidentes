@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Acidente #{{ acidente.id }} | HMA{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>{{ acidente.classificacao or 'Acidente' }} #{{ acidente.id }}</h1><p>{{ acidente.colaborador }} · {{ acidente.setor }}{% if acidente.investigador %} · <strong>Investigador:</strong> {{ acidente.investigador }}{% endif %}</p></div><div class="inline-actions"><a class="btn secondary" href="{{ url_for('consultar') }}">Voltar</a><a class="btn primary" href="{{ url_for('editar', acidente_id=acidente.id) }}">Editar</a></div></div>
+
+<div class="card body-map-card">
+    <div class="body-map-card-header">
+        <div>
+            <h2>🫀 Mapa Corporal de Lesões</h2>
+            <p>Visualização anatômica das regiões do corpo humano atingidas nesta ocorrência.</p>
+        </div>
+        <div class="body-map-legend">
+            <span class="legend-item"><span class="legend-color injured"></span> Região Atingida</span>
+            <span class="legend-item"><span class="legend-color normal"></span> Sem Lesão Registrada</span>
+        </div>
+    </div>
+    <div id="bodyMapDetail" data-body-map="readonly" data-selected="{{ acidente.parte_corpo or '' }}"></div>
+</div>
+
+<div class="card detail-grid">
+{% for label, value in [
+('Classificação', acidente.classificacao or 'Acidente'),
+('Investigador responsável', acidente.investigador),
+('Data da ocorrência', acidente.data_ocorrencia),
+('Colaborador', acidente.colaborador),
+('Contato', acidente.contato),
+('Setor', acidente.setor),
+('Função', acidente.funcao),
+('Tipo de ocorrência', acidente.tipo_ocorrencia),
+('Tipo de acidente / incidente', acidente.tipo_acidente),
+('Parte do corpo', acidente.parte_corpo),
+('Fonte geradora', acidente.fonte_geradora),
+('Turno', acidente.turno),
+('Sexo', acidente.sexo),
+('Tipo de contrato', acidente.tipo_contrato),
+('Dias de afastamento', acidente.dias_afastamento)
+] %}<div><span>{{ label }}</span><strong>{{ value if value not in [None,''] else '-' }}</strong></div>{% endfor %}
+</div>
+<div class="card flags"><h2>Informações complementares</h2><div class="flag-grid">
+{% for label, val in [('Exposição biológica',acidente.exposicao_biologica),('Perfurocortante',acidente.perfurocortante),('Fluxograma seguido',acidente.fluxograma_seguido),('Quimioprofilaxia',acidente.quimioprofilaxia),('CAT emitida',acidente.cat_emitida),('Houve afastamento',acidente.houve_afastamento)] %}<div class="flag {{ 'yes' if val else 'no' }}">{{ label }} <strong>{{ 'Sim' if val else 'Não' }}</strong></div>{% endfor %}
+</div>{% if acidente.observacoes %}<div class="notes"><span>Observações</span><p>{{ acidente.observacoes }}</p></div>{% endif %}</div>
+<form method="post" action="{{ url_for('excluir', acidente_id=acidente.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir este registro?')"><button class="btn danger" type="submit">Excluir registro</button></form>
+{% endblock %}

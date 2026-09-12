@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Consultar acidentes | HMA{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Consultar acidentes</h1><p>Pesquise e filtre os registros cadastrados.</p></div><a class="btn primary" href="{{ url_for('registrar') }}">+ Novo registro</a></div>
+<form class="filter-card search" method="get">
+    <label class="grow">Pesquisar<input type="search" name="busca" value="{{ filtros.busca }}" placeholder="Nome, Contato, função ou tipo..."></label>
+    <label>Ano<select name="ano"><option value="">Todos</option>{% for a in anos %}<option value="{{ a.ano }}" {{ 'selected' if filtros.ano == a.ano else '' }}>{{ a.ano }}</option>{% endfor %}</select></label>
+    <label>Mês<select name="mes"><option value="">Todos</option>{% for n,nome in [('01','Jan'),('02','Fev'),('03','Mar'),('04','Abr'),('05','Mai'),('06','Jun'),('07','Jul'),('08','Ago'),('09','Set'),('10','Out'),('11','Nov'),('12','Dez')] %}<option value="{{ n }}" {{ 'selected' if filtros.mes == n else '' }}>{{ nome }}</option>{% endfor %}</select></label>
+    <label>Setor<select name="setor"><option value="">Todos</option>{% for s in setores %}<option value="{{ s.setor }}" {{ 'selected' if filtros.setor == s.setor else '' }}>{{ s.setor }}</option>{% endfor %}</select></label>
+    <button class="btn primary" type="submit">Filtrar</button><a class="btn secondary" href="{{ url_for('consultar') }}">Limpar</a>
+</form>
+<div class="card table-card">
+    <div class="table-summary">{{ acidentes|length }} registro(s) encontrado(s)</div>
+    <div class="table-wrap"><table><thead><tr><th>Data</th><th>Classificação</th><th>Colaborador</th><th>Investigador</th><th>Setor</th><th>Função</th><th>Tipo</th><th>Afast.</th><th></th></tr></thead><tbody>
+    {% for a in acidentes %}<tr><td>{{ a.data_ocorrencia[8:10] }}/{{ a.data_ocorrencia[5:7] }}/{{ a.data_ocorrencia[0:4] }}</td><td><span class="badge {{ 'badge-danger' if (a.classificacao or 'Acidente') == 'Acidente' else 'badge-info' }}">{{ a.classificacao or 'Acidente' }}</span></td><td><strong>{{ a.colaborador }}</strong><small>{{ a.contato or a.matricula or '' }}</small></td><td>{{ a.investigador or '-' }}</td><td>{{ a.setor }}</td><td>{{ a.funcao or '-' }}</td><td>{{ a.tipo_acidente }}</td><td>{{ a.dias_afastamento }} dia(s)</td><td><a class="link" href="{{ url_for('detalhe', acidente_id=a.id) }}">Ver detalhes →</a></td></tr>
+    {% else %}<tr><td colspan="9" class="no-data">Nenhum registro encontrado.</td></tr>{% endfor %}
+    </tbody></table></div>
+</div>
+{% endblock %}

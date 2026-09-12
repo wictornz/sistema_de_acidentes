@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Editar acidente | HMA{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Editar acidente #{{ acidente.id }}</h1><p>Atualize os dados necessários.</p></div></div>
+<form method="post" class="card form-card">
+    {% include '_form.html' %}
+    <div class="form-actions"><a class="btn secondary" href="{{ url_for('detalhe', acidente_id=acidente.id) }}">Cancelar</a><button class="btn primary" type="submit">Salvar alterações</button></div>
+</form>
+{% endblock %}
