@@ -1,8 +1,8 @@
 <div class="form-grid">
     <label>Classificação da ocorrência *
         <select name="classificacao" required>
-            <option value="Acidente" {{ 'selected' if (not acidente) or (acidente and acidente.classificacao == 'Acidente') else '' }}>⚠️ Acidente</option>
-            <option value="Incidente" {{ 'selected' if acidente and acidente.classificacao == 'Incidente' else '' }}>ℹ️ Incidente (Quase-acidente)</option>
+            <option value="Acidente" {{ 'selected' if (not acidente) or (acidente and acidente.classificacao == 'Acidente') else '' }}> Acidente</option>
+            <option value="Incidente" {{ 'selected' if acidente and acidente.classificacao == 'Incidente' else '' }}> Incidente (Quase-acidente)</option>
         </select>
     </label>
     <label>Investigador responsável
