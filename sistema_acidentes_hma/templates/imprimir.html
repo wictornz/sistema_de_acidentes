@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imprimir — {{ acidente.classificacao or 'Acidente' }} #{{ acidente.numero or acidente.id }} | HMA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}">
+</head>
+<body>
+    <div class="print-toolbar">
+        <button class="btn btn-print" onclick="window.print()">Imprimir</button>
+        <a class="btn btn-back" href="{{ url_for('detalhe', acidente_id=acidente.id) }}">Voltar aos detalhes</a>
+    </div>
+
+    <div class="print-page">
+        <!-- ── Cabeçalho ── -->
+        <div class="print-header">
+            <div class="print-header-left">
+                <h1>HMA — Segurança do Trabalho</h1>
+                <p>Registro de Ocorrência de Trabalho</p>
+            </div>
+            <div class="print-header-right">
+                <div class="print-id">#{{ acidente.numero or acidente.id }}</div>
+                <span class="print-classif {{ 'print-classif--acidente' if (acidente.classificacao or 'Acidente') == 'Acidente' else 'print-classif--incidente' }}">
+                    {{ acidente.classificacao or 'Acidente' }}
+                </span>
+            </div>
+        </div>
+
+        <!-- ── Dados do Colaborador ── -->
+        <div class="print-section">
+            <div class="print-section-title">Dados do Colaborador</div>
+            <div class="print-grid">
+                {% for label, val in [
+                    ('Colaborador', acidente.colaborador),
+                    ('Contato', acidente.contato),
+                    ('Setor', acidente.setor),
+                    ('Função', acidente.funcao),
+                    ('Sexo', acidente.sexo),
+                    ('Tipo de contrato', acidente.tipo_contrato)
+                ] %}
+                <div class="print-field">
+                    <span class="print-field-label">{{ label }}</span>
+                    <span class="print-field-value {{ 'empty' if not val }}">{{ val if val else '—' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ── Dados da Ocorrência ── -->
+        <div class="print-section">
+            <div class="print-section-title">Dados da Ocorrência</div>
+            <div class="print-grid">
+                {% for label, val in [
+                    ('Data da ocorrência', acidente.data_ocorrencia),
+                    ('Classificação', acidente.classificacao or 'Acidente'),
+                    ('Investigador responsável', acidente.investigador),
+                    ('Tipo de ocorrência', acidente.tipo_ocorrencia),
+                    ('Tipo de acidente / incidente', acidente.tipo_acidente),
+                    ('Fonte geradora', acidente.fonte_geradora),
+                    ('Turno', acidente.turno),
+                    ('Parte(s) do corpo atingida(s)', acidente.parte_corpo)
+                ] %}
+                <div class="print-field">
+                    <span class="print-field-label">{{ label }}</span>
+                    <span class="print-field-value {{ 'empty' if not val }}">{{ val if val else '—' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ── Exposição / Procedimentos ── -->
+        <div class="print-section">
+            <div class="print-section-title">Exposição e Procedimentos</div>
+            <div class="print-flags">
+                {% for label, val in [
+                    ('Exposição biológica', acidente.exposicao_biologica),
+                    ('Material perfurocortante', acidente.perfurocortante),
+                    ('Fluxograma seguido', acidente.fluxograma_seguido),
+                    ('Quimioprofilaxia', acidente.quimioprofilaxia)
+                ] %}
+                <div class="print-flag {{ 'print-flag--yes' if val else 'print-flag--no' }}">
+                    <span>{{ label }}</span>
+                    <span class="flag-val">{{ 'Sim' if val else 'Não' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ── CAT e Afastamento ── -->
+        <div class="print-section">
+            <div class="print-section-title">CAT e Afastamento</div>
+            <div class="print-flags print-flags-mb">
+                <div class="print-flag {{ 'print-flag--yes' if acidente.cat_emitida else 'print-flag--no' }}">
+                    <span>CAT emitida</span>
+                    <span class="flag-val">{{ 'Sim' if acidente.cat_emitida else 'Não' }}</span>
+                </div>
+                <div class="print-flag {{ 'print-flag--yes' if acidente.houve_afastamento else 'print-flag--no' }}">
+                    <span>Houve afastamento</span>
+                    <span class="flag-val">{{ 'Sim' if acidente.houve_afastamento else 'Não' }}</span>
+                </div>
+            </div>
+            <div class="print-grid two-cols">
+                <div class="print-field">
+                    <span class="print-field-label">Data da CAT</span>
+                    <span class="print-field-value {{ 'empty' if not acidente.data_cat }}">{{ acidente.data_cat if acidente.data_cat else '—' }}</span>
+                </div>
+                <div class="print-field">
+                    <span class="print-field-label">Dias de afastamento</span>
+                    <span class="print-field-value">{{ acidente.dias_afastamento if acidente.dias_afastamento else '0' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Observações ── -->
+        {% if acidente.observacoes %}
+        <div class="print-section">
+            <div class="print-section-title">Observações</div>
+            <div class="print-obs">{{ acidente.observacoes }}</div>
+        </div>
+        {% endif %}
+
+        <!-- ── Rodapé ── -->
+        <div class="print-footer">
+            <span>Registro criado em: {{ acidente.criado_em }}</span>
+            <span>HMA — Sistema de Gestão de Acidentes do Trabalho</span>
+        </div>
+    </div>
+</body>
+</html>

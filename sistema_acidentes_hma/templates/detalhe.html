@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Acidente #{{ acidente.id }} | HMA{% endblock %}
+{% block title %}{{ acidente.classificacao or 'Acidente' }} #{{ acidente.numero or acidente.id }} | HMA{% endblock %}
 {% block content %}
-<div class="page-header"><div><h1>{{ acidente.classificacao or 'Acidente' }} #{{ acidente.id }}</h1><p>{{ acidente.colaborador }} · {{ acidente.setor }}{% if acidente.investigador %} · <strong>Investigador:</strong> {{ acidente.investigador }}{% endif %}</p></div><div class="inline-actions"><a class="btn secondary" href="{{ url_for('consultar') }}">Voltar</a><a class="btn primary" href="{{ url_for('editar', acidente_id=acidente.id) }}">Editar</a></div></div>
+<div class="page-header"><div><h1>{{ acidente.classificacao or 'Acidente' }} #{{ acidente.numero or acidente.id }}</h1><p>{{ acidente.colaborador }} · {{ acidente.setor }}{% if acidente.investigador %} · <strong>Investigador:</strong> {{ acidente.investigador }}{% endif %}</p></div><div class="inline-actions"><a class="btn secondary" href="{{ url_for('consultar') }}">Voltar</a><a class="btn primary" href="{{ url_for('editar', acidente_id=acidente.id) }}">Editar</a><a class="btn secondary" href="{{ url_for('imprimir', acidente_id=acidente.id) }}" target="_blank">Imprimir ocorrência</a></div></div>
 
 <div class="card body-map-card">
     <div class="body-map-card-header">
         <div>
-            <h2>🫀 Mapa Corporal de Lesões</h2>
+            <h2>Mapa Corporal de Lesões</h2>
             <p>Visualização anatômica das regiões do corpo humano atingidas nesta ocorrência.</p>
         </div>
         <div class="body-map-legend">

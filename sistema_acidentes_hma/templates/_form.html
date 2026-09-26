@@ -39,10 +39,10 @@
 </div>
 
 <!-- Mapa Anatômico Interativo do Corpo Humano -->
-<div class="card body-map-card" style="margin: 20px 0;">
+<div class="card body-map-card">
     <div class="body-map-card-header">
         <div>
-            <h3>🫀 Seleção de Partes do Corpo Atingidas</h3>
+            <h3>Seleção de Partes do Corpo Atingidas</h3>
             <p>Clique diretamente nas regiões do corpo humano (Frente e Costas) ou nos botões rápidos para marcar as lesões:</p>
         </div>
         <div class="body-map-legend">
@@ -51,13 +51,7 @@
         </div>
     </div>
     <div id="bodyMapForm" data-body-map="interactive" data-selected="{{ acidente.parte_corpo if acidente else '' }}" data-input-target="#parte_corpo_input"></div>
-    <div style="margin-top: 16px;">
-        <label style="display:grid;gap:6px;font-size:12px;color:#475569;font-weight:700;">
-            Partes do corpo atingidas (sincronizado automaticamente com os cliques):
-            <input type="text" id="parte_corpo_input" name="parte_corpo" placeholder="Ex.: Mão Direita, Dedos..." value="{{ acidente.parte_corpo if acidente else '' }}">
-        </label>
-        <small style="display:block;color:#64748b;margin-top:4px;font-size:11px;">Dica: Você pode clicar no corpo humano acima para marcar as regiões e também complementar com texto livre.</small>
-    </div>
+    <input type="hidden" id="parte_corpo_input" name="parte_corpo" value="{{ acidente.parte_corpo if acidente else '' }}">
 </div>
 <div class="checks">
     {% for field, label in [

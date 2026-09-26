@@ -11,9 +11,9 @@
 </form>
 <div class="card table-card">
     <div class="table-summary">{{ acidentes|length }} registro(s) encontrado(s)</div>
-    <div class="table-wrap"><table><thead><tr><th>Data</th><th>Classificação</th><th>Colaborador</th><th>Investigador</th><th>Setor</th><th>Função</th><th>Tipo</th><th>Afast.</th><th></th></tr></thead><tbody>
-    {% for a in acidentes %}<tr><td>{{ a.data_ocorrencia[8:10] }}/{{ a.data_ocorrencia[5:7] }}/{{ a.data_ocorrencia[0:4] }}</td><td><span class="badge {{ 'badge-danger' if (a.classificacao or 'Acidente') == 'Acidente' else 'badge-info' }}">{{ a.classificacao or 'Acidente' }}</span></td><td><strong>{{ a.colaborador }}</strong><small>{{ a.contato or a.matricula or '' }}</small></td><td>{{ a.investigador or '-' }}</td><td>{{ a.setor }}</td><td>{{ a.funcao or '-' }}</td><td>{{ a.tipo_acidente }}</td><td>{{ a.dias_afastamento }} dia(s)</td><td><a class="link" href="{{ url_for('detalhe', acidente_id=a.id) }}">Ver detalhes →</a></td></tr>
-    {% else %}<tr><td colspan="9" class="no-data">Nenhum registro encontrado.</td></tr>{% endfor %}
+    <div class="table-wrap"><table><thead><tr><th>#</th><th>Data</th><th>Classificação</th><th>Colaborador</th><th>Investigador</th><th>Setor</th><th>Função</th><th>Tipo</th><th>Afast.</th><th></th></tr></thead><tbody>
+    {% for a in acidentes %}<tr><td><strong>#{{ a.numero }}</strong></td><td>{{ a.data_ocorrencia[8:10] }}/{{ a.data_ocorrencia[5:7] }}/{{ a.data_ocorrencia[0:4] }}</td><td><span class="badge {{ 'badge-danger' if (a.classificacao or 'Acidente') == 'Acidente' else 'badge-info' }}">{{ a.classificacao or 'Acidente' }}</span></td><td><strong>{{ a.colaborador }}</strong><small>{{ a.contato or a.matricula or '' }}</small></td><td>{{ a.investigador or '-' }}</td><td>{{ a.setor }}</td><td>{{ a.funcao or '-' }}</td><td>{{ a.tipo_acidente }}</td><td>{{ a.dias_afastamento }} dia(s)</td><td><a class="link" href="{{ url_for('detalhe', acidente_id=a.id) }}">Ver detalhes →</a></td></tr>
+    {% else %}<tr><td colspan="10" class="no-data">Nenhum registro encontrado.</td></tr>{% endfor %}
     </tbody></table></div>
 </div>
 {% endblock %}

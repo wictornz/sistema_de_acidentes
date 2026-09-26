@@ -107,10 +107,10 @@
       var norm = normalizeStr(token);
       var matched = false;
 
-      // 1. Exact or startsWith label match
+      // 1. Exact label match only (prevents "braco" from matching "antebraco")
       BODY_PARTS.forEach(function (part) {
         var partNorm = normalizeStr(part.label);
-        if (norm === partNorm || norm.indexOf(partNorm) !== -1 || partNorm.indexOf(norm) !== -1) {
+        if (norm === partNorm) {
           matchedIds[part.id] = true;
           matched = true;
         }
@@ -332,7 +332,7 @@
 
     var tagsTitle = document.createElement('div');
     tagsTitle.className = 'body-map-side-title';
-    tagsTitle.innerHTML = '📍 <strong>Regiões Atingidas Registradas:</strong>';
+    tagsTitle.innerHTML = '<strong>Regiões Atingidas Registradas:</strong>';
     tagsHeader.appendChild(tagsTitle);
 
     if (interactive) {
@@ -360,8 +360,8 @@
     var chipsTitle = document.createElement('div');
     chipsTitle.className = 'body-map-side-title';
     chipsTitle.innerHTML = interactive
-      ? '⚡ <strong>Seleção Rápida por Região:</strong> <small style="font-weight:normal;color:#64748b">(Clique para marcar/desmarcar)</small>'
-      : '📋 <strong>Principais Regiões Anatômicas:</strong>';
+      ? '<strong>Seleção Rápida por Região:</strong> <small class="text-muted">(Clique para marcar/desmarcar)</small>'
+      : '<strong>Principais Regiões Anatômicas:</strong>';
     sidePanel.appendChild(chipsTitle);
 
     var chipsGrid = document.createElement('div');
@@ -484,15 +484,7 @@
       }
     }
 
-    // Se o usuário digitar no input manualmente, sincronizar de volta com o mapa
-    if (interactive && targetInput) {
-      targetInput.addEventListener('input', function () {
-        var res = matchTextToPartIds(targetInput.value);
-        selected = Object.assign({}, res.ids);
-        customTags = res.unmatched.slice();
-        syncAll();
-      });
-    }
+    // Input manual desabilitado – campo agora é hidden, sincronização é via mapa apenas.
 
     // Renderização inicial
     syncAll();

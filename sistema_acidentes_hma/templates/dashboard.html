@@ -25,28 +25,24 @@
 
 <div class="kpis">
     <div class="kpi kpi--blue">
-        <div class="kpi-icon">📊</div>
         <div>
             <span>Total de acidentes</span>
             <strong id="kpiTotal">0</strong>
         </div>
     </div>
     <div class="kpi kpi--amber">
-        <div class="kpi-icon">⏱️</div>
         <div>
             <span>Dias de afastamento</span>
             <strong id="kpiDias">0</strong>
         </div>
     </div>
     <div class="kpi kpi--purple">
-        <div class="kpi-icon">📋</div>
         <div>
             <span>CATs emitidas</span>
             <strong id="kpiCat">0</strong>
         </div>
     </div>
     <div class="kpi kpi--rose">
-        <div class="kpi-icon">🏥</div>
         <div>
             <span>Com afastamento</span>
             <strong id="kpiAfast">0</strong>
@@ -59,7 +55,7 @@
     <section class="card chart-card chart-card--featured">
         <div class="chart-header">
             <div>
-                <h2>🫀 Partes do corpo mais atingidas</h2>
+                <h2>Partes do corpo mais atingidas</h2>
                 <p>Distribuição anatômica das lesões registradas</p>
             </div>
             <span class="chart-tag chart-tag--danger">Anatomia</span>
@@ -67,7 +63,6 @@
         <div class="chart-body">
             <canvas id="chartPartes"></canvas>
             <div class="empty" id="emptyPartes">
-                <span class="empty-icon">🫀</span>
                 <p>Nenhuma parte anatômica registrada para estes filtros.</p>
             </div>
         </div>
@@ -77,7 +72,7 @@
     <section class="card chart-card">
         <div class="chart-header">
             <div>
-                <h2>⚠️ Tipos de acidente</h2>
+                <h2>Tipos de acidente</h2>
                 <p>Distribuição por natureza da ocorrência</p>
             </div>
             <span class="chart-tag chart-tag--primary">Classificação</span>
@@ -85,7 +80,6 @@
         <div class="chart-body">
             <canvas id="chartTipo"></canvas>
             <div class="empty" id="emptyTipo">
-                <span class="empty-icon">📊</span>
                 <p>Nenhum dado registrado para estes filtros.</p>
             </div>
         </div>
@@ -95,7 +89,7 @@
     <section class="card chart-card">
         <div class="chart-header">
             <div>
-                <h2>📈 Evolução mensal dos acidentes</h2>
+                <h2>Evolução mensal dos acidentes</h2>
                 <p>Histórico de ocorrências mês a mês</p>
             </div>
             <span class="chart-tag chart-tag--info">Temporal</span>
@@ -103,7 +97,6 @@
         <div class="chart-body">
             <canvas id="chartMes"></canvas>
             <div class="empty" id="emptyMes">
-                <span class="empty-icon">📅</span>
                 <p>Nenhum dado registrado para estes filtros.</p>
             </div>
         </div>
@@ -113,7 +106,7 @@
     <section class="card chart-card">
         <div class="chart-header">
             <div>
-                <h2>🏢 Acidentes por setor</h2>
+                <h2>Acidentes por setor</h2>
                 <p>Locais de trabalho com mais ocorrências</p>
             </div>
             <span class="chart-tag chart-tag--neutral">Setores</span>
@@ -121,7 +114,6 @@
         <div class="chart-body">
             <canvas id="chartSetor"></canvas>
             <div class="empty" id="emptySetor">
-                <span class="empty-icon">🏢</span>
                 <p>Nenhum dado registrado para estes filtros.</p>
             </div>
         </div>
@@ -131,7 +123,7 @@
     <section class="card chart-card span-2">
         <div class="chart-header">
             <div>
-                <h2>🩺 Acidentes por função / cargo</h2>
+                <h2>Acidentes por função / cargo</h2>
                 <p>Cargos hospitalares com maior frequência de sinistros</p>
             </div>
             <span class="chart-tag chart-tag--success">Cargos</span>
@@ -139,7 +131,6 @@
         <div class="chart-body">
             <canvas id="chartFuncao"></canvas>
             <div class="empty" id="emptyFuncao">
-                <span class="empty-icon">🩺</span>
                 <p>Nenhum dado registrado para estes filtros.</p>
             </div>
         </div>

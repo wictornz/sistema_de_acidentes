@@ -16,13 +16,30 @@
                 <div><strong>Segurança do Trabalho</strong><span>Gestão de acidentes</span></div>
             </div>
             <nav>
-                <a href="{{ url_for('dashboard') }}" class="{{ 'active' if page == 'dashboard' else '' }}">▦
+                <a href="{{ url_for('dashboard') }}" class="{{ 'active' if page == 'dashboard' else '' }}">
                     <span>Dashboard</span></a>
-                <a href="{{ url_for('registrar') }}" class="{{ 'active' if page == 'registrar' else '' }}">＋
+                <a href="{{ url_for('registrar') }}" class="{{ 'active' if page == 'registrar' else '' }}">
                     <span>Registrar acidente</span></a>
-                <a href="{{ url_for('consultar') }}" class="{{ 'active' if page == 'consultar' else '' }}">⌕
+                <a href="{{ url_for('consultar') }}" class="{{ 'active' if page == 'consultar' else '' }}">
                     <span>Consultar acidentes</span></a>
+                {% if usuario_atual and usuario_atual.is_admin %}
+                <a href="{{ url_for('admin_usuarios') }}" class="{{ 'active' if page == 'usuarios' else '' }}">
+                    <span>Gerenciar Usuários</span></a>
+                {% endif %}
             </nav>
+            {% if usuario_atual %}
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-name" title="{{ usuario_atual.nome }}">{{ usuario_atual.nome }}</div>
+                    <div class="user-role-badge {{ 'admin' if usuario_atual.is_admin else 'funcionario' }}">
+                        {{ 'Administrador' if usuario_atual.is_admin else 'Funcionário' }}
+                    </div>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn-logout" title="Sair do sistema">
+                    Sair
+                </a>
+            </div>
+            {% endif %}
         </aside>
         <main class="content">
             {% with messages = get_flashed_messages(with_categories=true) %}

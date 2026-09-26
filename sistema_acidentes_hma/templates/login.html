@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Gestão de Acidentes HMA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="brand-mark">HMA</div>
+                <h1>Segurança do Trabalho</h1>
+                <p>Gestão de Ocorrências e Acidentes</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="login-flashes">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}" class="login-form">
+                {% if request.args.get('next') %}
+                <input type="hidden" name="next" value="{{ request.args.get('next') }}">
+                {% endif %}
+
+                <label>
+                    E-mail
+                    <input type="email" name="email" required autofocus placeholder="seu.email@hma.com.br" autocomplete="email">
+                </label>
+
+                <label>
+                    Senha
+                    <input type="password" name="senha" required placeholder="Digite sua senha" autocomplete="current-password">
+                </label>
+
+                <button type="submit" class="btn primary login-btn">Entrar no sistema</button>
+            </form>
+
+            <div class="login-footer">
+                Acesso restrito a colaboradores autorizados
+            </div>
+        </div>
+    </div>
+</body>
+</html>
