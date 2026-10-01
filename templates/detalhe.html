@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}{{ acidente.classificacao or 'Acidente' }} #{{ acidente.numero or acidente.id }} | HMA{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{{ acidente.classificacao or 'Acidente' }} #{{ acidente.numero or acidente.id }}</h1>
+        <p>{{ acidente.colaborador }} · {{ acidente.setor }}{% if acidente.investigador %} · <strong>Investigador:</strong> {{ acidente.investigador }}{% endif %}</p>
+    </div>
+    <div class="inline-actions">
+        <a class="btn secondary" href="{{ url_for('consultar') }}">Voltar</a>
+        <a class="btn primary" href="{{ url_for('editar', acidente_id=acidente.id) }}">Editar</a>
+        <a class="btn secondary" href="{{ url_for('imprimir', acidente_id=acidente.id) }}" target="_blank">Imprimir ocorrência</a>
+    </div>
+</div>
+
+<!-- ── Mapa Anatômico ── -->
+<div class="card body-map-card">
+    <div class="body-map-card-header">
+        <div>
+            <h2>Mapa Corporal de Lesões</h2>
+            <p>Visualização anatômica das regiões do corpo humano atingidas nesta ocorrência.</p>
+        </div>
+        <div class="body-map-legend">
+            <span class="legend-item"><span class="legend-color injured"></span> Região Atingida</span>
+            <span class="legend-item"><span class="legend-color normal"></span> Sem Lesão Registrada</span>
+        </div>
+    </div>
+    <div id="bodyMapDetail" data-body-map="readonly" data-selected="{{ acidente.parte_corpo or '' }}"></div>
+</div>
+
+<!-- ── Dados do Colaborador ── -->
+<div class="card card-mb" style="padding: 20px;">
+    <h2 style="font-size: 16px; margin: 0 0 16px; color: var(--text);">Dados do Colaborador</h2>
+    <div class="detail-grid" style="padding: 0;">
+        {% for label, value in [
+        ('Colaborador', acidente.colaborador),
+        ('Contato / Telefone', acidente.contato),
+        ('Matrícula', acidente.matricula),
+        ('Setor', acidente.setor),
+        ('Função / Cargo', acidente.funcao),
+        ('Turno de Trabalho', acidente.turno_trabalhador or acidente.turno),
+        ('Sexo', acidente.sexo),
+        ('Tipo de Contrato', acidente.tipo_contrato)
+        ] %}
+        <div><span>{{ label }}</span><strong>{{ value if value not in [None,''] else '-' }}</strong></div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ── Dados da Ocorrência ── -->
+<div class="card card-mb" style="padding: 20px;">
+    <h2 style="font-size: 16px; margin: 0 0 16px; color: var(--text);">Dados da Ocorrência</h2>
+    <div class="detail-grid" style="padding: 0;">
+        {% for label, value in [
+        ('Classificação', acidente.classificacao or 'Acidente'),
+        ('Investigador responsável', acidente.investigador),
+        ('Data da ocorrência', acidente.data_ocorrencia|format_date),
+        ('Hora do acidente', acidente.hora_acidente),
+        ('Local do acidente', acidente.local_acidente),
+        ('Turno do acidente', acidente.turno_acidente or acidente.turno),
+        ('Tipo de ocorrência', acidente.tipo_ocorrencia),
+        ('Tipo de acidente / incidente', acidente.tipo_acidente),
+        ('Fonte geradora', acidente.fonte_geradora),
+        ('EPI com disp. de segurança', acidente.epi_dispositivo_seguranca),
+        ('Classificação biológica', acidente.tipo_biologico or ('Biológico' if acidente.exposicao_biologica else 'Não biológico'))
+        ] %}
+        <div><span>{{ label }}</span><strong>{{ value if value not in [None,''] else '-' }}</strong></div>
+        {% endfor %}
+    </div>
+    {% if acidente.acao_corretiva %}
+    <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <span style="font-size: 12px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 4px;">Ação Corretiva</span>
+        <p style="margin: 0; font-size: 14px;">{{ acidente.acao_corretiva }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ── Dados Específicos de Acidente Biológico ── -->
+{% if acidente.tipo_biologico == 'Biológico' or acidente.exposicao_biologica == 1 %}
+<div class="card card-mb" style="padding: 20px; border-left: 4px solid #ef4444;">
+    <h2 style="font-size: 16px; margin: 0 0 16px; color: #b91c1c;">Detalhes do Acidente Biológico</h2>
+    <div class="detail-grid" style="padding: 0;">
+        {% for label, value in [
+        ('Tipo de exposição', acidente.tipo_exposicao),
+        ('Paciente fonte', acidente.paciente_fonte),
+        ('Identificação paciente fonte', acidente.paciente_fonte_info if acidente.paciente_fonte == 'Sim' else 'Não se aplica'),
+        ('Perfurocortante com disp. segurança', acidente.perf_dispositivo_seguranca),
+        ('Sangue visível no perfurocortante', acidente.sangue_visivel),
+        ('Colaborador usando EPI', acidente.colaborador_usando_epi),
+        ('Momento da exposição', acidente.momento_exposicao)
+        ] %}
+        <div><span>{{ label }}</span><strong>{{ value if value not in [None,''] else '-' }}</strong></div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- ── Dados Médicos e Afastamento ── -->
+<div class="card card-mb" style="padding: 20px;">
+    <h2 style="font-size: 16px; margin: 0 0 16px; color: var(--text);">Dados Médicos e Atendimento</h2>
+    <div class="detail-grid" style="padding: 0;">
+        {% for label, value in [
+        ('Médico e CRM', acidente.medico_nome_crm),
+        ('Unidade de atendimento', acidente.unidade_atendimento),
+        ('Data do atendimento', acidente.data_atendimento|format_date),
+        ('Necessidade de afastamento', acidente.necessidade_afastamento or ('Sim' if acidente.houve_afastamento else 'Não')),
+        ('Dias de afastamento', acidente.dias_afastamento_tratamento or acidente.dias_afastamento or 0),
+        ('CID', acidente.cid)
+        ] %}
+        <div><span>{{ label }}</span><strong>{{ value if value not in [None,''] else '-' }}</strong></div>
+        {% endfor %}
+    </div>
+    {% if acidente.descricao_medica %}
+    <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <span style="font-size: 12px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 4px;">Descrição Médica</span>
+        <p style="margin: 0; font-size: 14px; white-space: pre-wrap;">{{ acidente.descricao_medica }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ── Informações Complementares e Protocolos ── -->
+<div class="card flags">
+    <h2>Protocolos Institucionais e CAT</h2>
+    <div class="flag-grid">
+        {% for label, val in [
+        ('Material perfurocortante', acidente.perfurocortante),
+        ('Fluxograma seguido', acidente.fluxograma_seguido),
+        ('Quimioprofilaxia', acidente.quimioprofilaxia),
+        ('CAT emitida', acidente.cat_emitida),
+        ('Houve afastamento', acidente.houve_afastamento or (1 if acidente.necessidade_afastamento == 'Sim' else 0))
+        ] %}
+        <div class="flag {{ 'yes' if val else 'no' }}">{{ label }} <strong>{{ 'Sim' if val else 'Não' }}</strong></div>
+        {% endfor %}
+    </div>
+    {% if acidente.data_cat %}
+    <div style="margin-top: 14px; font-size: 13px; color: #475569;">
+        <strong>Data de emissão da CAT:</strong> {{ acidente.data_cat|format_date }}
+    </div>
+    {% endif %}
+
+    {% if acidente.observacoes %}
+    <div class="notes">
+        <span>Descrição do acidente</span>
+        <p>{{ acidente.observacoes }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<form method="post" action="{{ url_for('excluir', acidente_id=acidente.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir este registro?')">
+    <button class="btn danger" type="submit">Excluir registro</button>
+</form>
+{% endblock %}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imprimir — {{ acidente.classificacao or 'Acidente' }} #{{ acidente.numero or acidente.id }} | HMA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}">
+</head>
+<body>
+    <div class="print-toolbar">
+        <button class="btn btn-print" onclick="window.print()">Imprimir</button>
+        <a class="btn btn-back" href="{{ url_for('detalhe', acidente_id=acidente.id) }}">Voltar aos detalhes</a>
+    </div>
+
+    <div class="print-page">
+        <!-- ── Cabeçalho ── -->
+        <div class="print-header">
+            <div class="print-header-left">
+                <h1>HMA — Segurança do Trabalho</h1>
+                <p>Registro de Ocorrência de Trabalho</p>
+            </div>
+            <div class="print-header-right">
+                <div class="print-id">#{{ acidente.numero or acidente.id }}</div>
+                <span class="print-classif {{ 'print-classif--acidente' if (acidente.classificacao or 'Acidente') == 'Acidente' else 'print-classif--incidente' }}">
+                    {{ acidente.classificacao or 'Acidente' }}
+                </span>
+            </div>
+        </div>
+
+        <!-- ── Dados do Colaborador ── -->
+        <div class="print-section">
+            <div class="print-section-title">Dados do Colaborador</div>
+            <div class="print-grid">
+                {% for label, val in [
+                    ('Colaborador', acidente.colaborador),
+                    ('Contato / Telefone', acidente.contato),
+                    ('Setor', acidente.setor),
+                    ('Função / Cargo', acidente.funcao),
+                    ('Turno de Trabalho', acidente.turno_trabalhador or acidente.turno),
+                    ('Sexo', acidente.sexo),
+                    ('Tipo de contrato', acidente.tipo_contrato)
+                ] %}
+                <div class="print-field">
+                    <span class="print-field-label">{{ label }}</span>
+                    <span class="print-field-value {{ 'empty' if not val }}">{{ val if val else '—' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ── Dados da Ocorrência ── -->
+        <div class="print-section">
+            <div class="print-section-title">Dados da Ocorrência</div>
+            <div class="print-grid">
+                {% for label, val in [
+                    ('Data da ocorrência', acidente.data_ocorrencia|format_date),
+                    ('Hora do acidente', acidente.hora_acidente),
+                    ('Local do acidente', acidente.local_acidente),
+                    ('Turno do acidente', acidente.turno_acidente or acidente.turno),
+                    ('Classificação', acidente.classificacao or 'Acidente'),
+                    ('Investigador responsável', acidente.investigador),
+                    ('Tipo de ocorrência', acidente.tipo_ocorrencia),
+                    ('Tipo de acidente / incidente', acidente.tipo_acidente),
+                    ('Fonte geradora', acidente.fonte_geradora),
+                    ('EPI com disp. segurança', acidente.epi_dispositivo_seguranca),
+                    ('Parte(s) do corpo atingida(s)', acidente.parte_corpo)
+                ] %}
+                <div class="print-field">
+                    <span class="print-field-label">{{ label }}</span>
+                    <span class="print-field-value {{ 'empty' if not val }}">{{ val if val else '—' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% if acidente.acao_corretiva %}
+            <div class="print-field" style="margin-top: 6px;">
+                <span class="print-field-label">Ação Corretiva</span>
+                <span class="print-field-value">{{ acidente.acao_corretiva }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ── Exposição Biológica (se aplicável) ── -->
+        {% if acidente.tipo_biologico == 'Biológico' or acidente.exposicao_biologica == 1 %}
+        <div class="print-section">
+            <div class="print-section-title">Classificação e Dados de Exposição Biológica</div>
+            <div class="print-grid">
+                {% for label, val in [
+                    ('Tipo de exposição', acidente.tipo_exposicao),
+                    ('Paciente fonte', acidente.paciente_fonte),
+                    ('Identificação paciente fonte', acidente.paciente_fonte_info if acidente.paciente_fonte == 'Sim' else 'Não se aplica'),
+                    ('Perfurocortante com disp. segurança', acidente.perf_dispositivo_seguranca),
+                    ('Sangue visível', acidente.sangue_visivel),
+                    ('Colaborador usando EPI', acidente.colaborador_usando_epi),
+                    ('Momento da exposição', acidente.momento_exposicao)
+                ] %}
+                <div class="print-field">
+                    <span class="print-field-label">{{ label }}</span>
+                    <span class="print-field-value {{ 'empty' if not val }}">{{ val if val else '—' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ── Dados Médicos e Atendimento ── -->
+        <div class="print-section">
+            <div class="print-section-title">Dados Médicos e Atendimento</div>
+            <div class="print-grid">
+                {% for label, val in [
+                    ('Nome do médico e CRM', acidente.medico_nome_crm),
+                    ('Unidade de atendimento', acidente.unidade_atendimento),
+                    ('Data do atendimento', acidente.data_atendimento|format_date),
+                    ('Necessidade de afastamento', acidente.necessidade_afastamento or ('Sim' if acidente.houve_afastamento else 'Não')),
+                    ('Dias de afastamento', acidente.dias_afastamento_tratamento or acidente.dias_afastamento or 0),
+                    ('CID', acidente.cid)
+                ] %}
+                <div class="print-field">
+                    <span class="print-field-label">{{ label }}</span>
+                    <span class="print-field-value {{ 'empty' if not val }}">{{ val if val else '—' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% if acidente.descricao_medica %}
+            <div class="print-field" style="margin-top: 6px;">
+                <span class="print-field-label">Descrição Médica</span>
+                <span class="print-field-value">{{ acidente.descricao_medica }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ── Procedimentos e CAT ── -->
+        <div class="print-section">
+            <div class="print-section-title">Protocolos Institucionais e CAT</div>
+            <div class="print-flags print-flags-mb">
+                {% for label, val in [
+                    ('Material perfurocortante', acidente.perfurocortante),
+                    ('Fluxograma seguido', acidente.fluxograma_seguido),
+                    ('Quimioprofilaxia', acidente.quimioprofilaxia),
+                    ('CAT emitida', acidente.cat_emitida),
+                    ('Houve afastamento', acidente.houve_afastamento or (1 if acidente.necessidade_afastamento == 'Sim' else 0))
+                ] %}
+                <div class="print-flag {{ 'print-flag--yes' if val else 'print-flag--no' }}">
+                    <span>{{ label }}</span>
+                    <span class="flag-val">{{ 'Sim' if val else 'Não' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="print-grid two-cols">
+                <div class="print-field">
+                    <span class="print-field-label">Data da CAT</span>
+                    <span class="print-field-value {{ 'empty' if not acidente.data_cat }}">{{ acidente.data_cat|format_date if acidente.data_cat else '—' }}</span>
+                </div>
+                <div class="print-field">
+                    <span class="print-field-label">Dias de afastamento</span>
+                    <span class="print-field-value">{{ acidente.dias_afastamento_tratamento or acidente.dias_afastamento or '0' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Descrição do Acidente (renomeado de Observações) ── -->
+        {% if acidente.observacoes %}
+        <div class="print-section">
+            <div class="print-section-title">Descrição do Acidente</div>
+            <div class="print-obs">{{ acidente.observacoes }}</div>
+        </div>
+        {% endif %}
+
+        <!-- ── Rodapé ── -->
+        <div class="print-footer">
+            <span>Registro criado em: {{ acidente.criado_em|format_date }}</span>
+            <span>HMA — Sistema de Gestão de Acidentes do Trabalho</span>
+        </div>
+    </div>
+</body>
+</html>

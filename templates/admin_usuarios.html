@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Gerenciamento de Funcionários | HMA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Gerenciamento de Funcionários</h1>
+        <p>Cadastre novos funcionários e controle o status de acesso ao sistema.</p>
+    </div>
+</div>
+
+<div class="card form-card card-mb">
+    <h2>Cadastrar Novo Funcionário</h2>
+    <p class="card-subtitle">
+        Informe os dados do colaborador para acesso ao sistema. O perfil atribuído será <strong>Funcionário</strong> e o acesso estará <strong>Ativo</strong> imediatamente. A senha será gravada com criptografia de hash seguro.
+    </p>
+
+    <form method="POST" action="{{ url_for('admin_criar_usuario') }}">
+        <div class="form-grid">
+            <label>
+                Nome Completo *
+                <input type="text" name="nome" required placeholder="Ex.: Ana Paula Santos">
+            </label>
+            <label>
+                E-mail Corporativo *
+                <input type="email" name="email" required placeholder="Ex.: ana.santos@hma.com.br">
+            </label>
+            <label>
+                Senha Inicial *
+                <input type="password" name="senha" required minlength="6" placeholder="Mínimo de 6 caracteres">
+            </label>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn primary">Cadastrar Funcionário</button>
+        </div>
+    </form>
+</div>
+
+<div class="card table-card">
+    <div class="table-summary">
+        <strong>{{ usuarios|length }}</strong> usuário(s) cadastrado(s) no sistema
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Perfil</th>
+                    <th>Status</th>
+                    <th>Data de Cadastro</th>
+                    <th class="text-right">Ações de Acesso</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for u in usuarios %}
+                <tr>
+                    <td><strong>{{ u.nome }}</strong></td>
+                    <td>{{ u.email }}</td>
+                    <td>
+                        <span class="user-role-badge {{ 'admin' if u.tipo == 'admin' else 'funcionario' }}">
+                            {{ 'Administrador' if u.tipo == 'admin' else 'Funcionário' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge-status {{ 'ativo' if u.ativo else 'desativado' }}">
+                            {{ 'Ativo' if u.ativo else 'Desativado' }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ u.data_cadastro if u.data_cadastro else (u.criado_em.strftime('%d/%m/%Y') if (u.criado_em and u.criado_em.strftime is defined) else ((u.criado_em|string)[:10] if u.criado_em else '-')) }}
+                    </td>
+                    <td class="text-right">
+                        {% if u.id == usuario_atual.id %}
+                            <span class="badge-self" title="Você não pode desativar seu próprio acesso">Sua conta</span>
+                        {% else %}
+                            {% if u.ativo %}
+                                <form method="POST" action="{{ url_for('admin_toggle_status', usuario_id=u.id) }}" class="inline-form"
+                                      onsubmit="return confirm('Tem certeza que deseja desativar o acesso deste usuário?');">
+                                    <button type="submit" class="btn btn-sm btn-deactivate">Desativar</button>
+                                </form>
+                            {% else %}
+                                <form method="POST" action="{{ url_for('admin_toggle_status', usuario_id=u.id) }}" class="inline-form"
+                                      onsubmit="return confirm('Tem certeza que deseja ativar o acesso deste usuário?');">
+                                    <button type="submit" class="btn btn-sm btn-activate">Ativar</button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="no-data">Nenhum usuário cadastrado.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

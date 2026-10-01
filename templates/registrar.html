@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Registrar acidente | HMA{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Registrar acidente</h1><p>Preencha os dados da ocorrência.</p></div></div>
+<form method="post" class="card form-card">
+    {% include '_form.html' %}
+    <div class="form-actions"><a class="btn secondary" href="{{ url_for('dashboard') }}">Cancelar</a><button class="btn primary" type="submit">Salvar registro</button></div>
+</form>
+{% endblock %}
