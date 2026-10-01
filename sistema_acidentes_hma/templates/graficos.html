@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}Painel de Gráficos | HMA{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Painel Analítico de Gráficos</h1>
+        <p>Análise estatística de acidentes do trabalho.</p>
+    </div>
+</div>
+
+<!-- ── Seletor Principal: Acidentes x Incidentes & Filtros Globais ── -->
+<div class="filter-card filter-card--analytics">
+    <div class="filter-control-group">
+        <label>Tipo de Ocorrência
+            <select id="filtroClassificacao" class="select-highlight">
+                <option value="Acidente" selected>Acidentes</option>
+                <option value="Incidente">Incidentes (Quase-acidentes)</option>
+                <option value="Todos">Todos os Registros</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="filter-control-group">
+        <label>Cargo / Função
+            <select id="filtroCargo">
+                <option value="">Todos os cargos</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="filter-control-group">
+        <label>Setor
+            <select id="filtroSetor">
+                <option value="">Todos os setores</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="filter-control-group">
+        <label>Mês
+            <select id="filtroMes">
+                <option value="">Todos os meses</option>
+                {% for n, nome in [('01','Janeiro'),('02','Fevereiro'),('03','Março'),('04','Abril'),('05','Maio'),('06','Junho'),('07','Julho'),('08','Agosto'),('09','Setembro'),('10','Outubro'),('11','Novembro'),('12','Dezembro')] %}
+                <option value="{{ n }}">{{ nome }}</option>
+                {% endfor %}
+            </select>
+        </label>
+    </div>
+
+    <div class="filter-actions-group">
+        <button class="btn secondary" id="limparFiltrosGraficos">Limpar filtros</button>
+    </div>
+</div>
+
+<!-- ── Grid de Gráficos (6 Gráficos) ── -->
+<div class="charts-grid-graficos">
+    <!-- 1. Gráfico de Cargos -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>Ocorrências por Cargo / Função</h2>
+                <p>Funções hospitalares com maior incidência</p>
+            </div>
+            <span class="chart-tag chart-tag--primary">Cargos</span>
+        </div>
+        <div class="chart-body chart-body--tall">
+            <canvas id="chartGeralCargos"></canvas>
+            <div class="empty" id="emptyGeralCargos">
+                <p>Nenhum dado encontrado para os filtros selecionados.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Gráfico de Setor -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>Ocorrências por Setor</h2>
+                <p>Distribuição nos setores e unidades do hospital</p>
+            </div>
+            <span class="chart-tag chart-tag--info">Setores</span>
+        </div>
+        <div class="chart-body chart-body--tall">
+            <canvas id="chartGeralSetores"></canvas>
+            <div class="empty" id="emptyGeralSetores">
+                <p>Nenhum dado encontrado para os filtros selecionados.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Gráfico de Local onde ocorreu o acidente -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>Local onde ocorreu a ocorrência</h2>
+                <p>Locais específicos dentro e fora do hospital</p>
+            </div>
+            <span class="chart-tag chart-tag--neutral">Locais</span>
+        </div>
+        <div class="chart-body chart-body--tall">
+            <canvas id="chartGeralLocais"></canvas>
+            <div class="empty" id="emptyGeralLocais">
+                <p>Nenhum dado registrado para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Gráfico de Tipo de Exposição (apenas Biológicos) -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>Tipo de Exposição (Acidentes Biológicos)</h2>
+                <p>Percutânea, mucocutânea ou mordedura</p>
+            </div>
+            <span class="chart-tag chart-tag--danger">Biológico</span>
+        </div>
+        <div class="chart-body chart-body--tall">
+            <canvas id="chartGeralExposicoes"></canvas>
+            <div class="empty" id="emptyGeralExposicoes">
+                <p>Nenhum acidente biológico registrado para os filtros.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Gráfico de Período do Dia (Turno) -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>Período do Dia da Ocorrência</h2>
+                <p>Manhã, Tarde, Noite ou Madrugada</p>
+            </div>
+            <span class="chart-tag chart-tag--amber">Turno</span>
+        </div>
+        <div class="chart-body chart-body--tall">
+            <canvas id="chartGeralPeriodos"></canvas>
+            <div class="empty" id="emptyGeralPeriodos">
+                <p>Nenhum período registrado para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Gráfico de Partes do Corpo Atingidas -->
+    <section class="card chart-card">
+        <div class="chart-header">
+            <div>
+                <h2>Partes do Corpo Atingidas</h2>
+                <p>Membros e regiões anatômicas lesionadas</p>
+            </div>
+            <span class="chart-tag chart-tag--success">Anatomia</span>
+        </div>
+        <div class="chart-body chart-body--tall">
+            <canvas id="chartGeralPartes"></canvas>
+            <div class="empty" id="emptyGeralPartes">
+                <p>Nenhuma parte do corpo registrada para estes filtros.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/graficos.js') }}"></script>
+{% endblock %}

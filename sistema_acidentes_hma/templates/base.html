@@ -18,6 +18,8 @@
             <nav>
                 <a href="{{ url_for('dashboard') }}" class="{{ 'active' if page == 'dashboard' else '' }}">
                     <span>Dashboard</span></a>
+                <a href="{{ url_for('graficos') }}" class="{{ 'active' if page == 'graficos' else '' }}">
+                    <span>Gráficos</span></a>
                 <a href="{{ url_for('registrar') }}" class="{{ 'active' if page == 'registrar' else '' }}">
                     <span>Registrar acidente</span></a>
                 <a href="{{ url_for('consultar') }}" class="{{ 'active' if page == 'consultar' else '' }}">

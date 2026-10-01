@@ -499,12 +499,37 @@ td small {
     grid-template-columns: 1fr
   }
 
-  .sidebar nav span {
-    display: none
+  .sidebar {
+    padding: 12px;
+  }
+
+  .sidebar nav {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
   }
 
   .sidebar nav a {
-    font-size: 20px
+    font-size: 12.5px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .sidebar nav span {
+    display: inline-block !important;
+  }
+
+  .sidebar-footer {
+    padding-top: 10px;
+    margin-top: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 
@@ -1291,4 +1316,131 @@ td small {
 
 .body-map-card {
   margin: 20px 0;
+}
+
+/* ==========================================================================
+   Seções de Formulário & Campos Condicionais
+   ========================================================================== */
+.form-section-header {
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.form-section-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0d1f3c;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.grid-span-full {
+  grid-column: 1 / -1;
+}
+
+.conditional-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Badges & Alertas de CAT (Consultas)
+   ========================================================================== */
+.badge-cat-pendente {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  font-weight: 800;
+  box-shadow: 0 1px 4px rgba(220, 38, 38, 0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-success {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  font-weight: 700;
+}
+
+.chart-tag--amber {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/* ==========================================================================
+   Painel de Gráficos Analíticos (6 Gráficos)
+   ========================================================================== */
+.filter-card--analytics {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+}
+
+.filter-control-group {
+  flex: 1;
+  min-width: 170px;
+}
+
+.filter-control-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.filter-control-group select {
+  width: 100%;
+}
+
+.select-highlight {
+  border-color: #3b82f6 !important;
+  background: #eff6ff !important;
+  font-weight: 700 !important;
+  color: #1d4ed8 !important;
+}
+
+.filter-actions-group {
+  display: flex;
+  align-items: flex-end;
+}
+
+.charts-grid-graficos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.chart-body--tall {
+  height: 220px !important;
+  max-height: 220px !important;
+}
+
+.chart-body--tall canvas {
+  max-height: 220px !important;
+}
+
+@media (max-width: 950px) {
+  .charts-grid-graficos {
+    grid-template-columns: 1fr;
+  }
 }
